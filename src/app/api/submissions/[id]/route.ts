@@ -22,26 +22,29 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   if (submission && status === "approved") {
     const task = await db.select().from(schema.tasks).where(eq(schema.tasks.id, submission.taskId)).get();
     if (task) {
-      const existing = await db.select().from(schema.userProgress)
-        .where(and(eq(schema.userProgress.userId, submission.userId), eq(schema.userProgress.taskId, submission.taskId)))
-        .get();
+      const workerId = submission.userId || submission.workerPhone;
+      if (workerId) {
+        const existing = await db.select().from(schema.userProgress)
+          .where(and(eq(schema.userProgress.userId, workerId), eq(schema.userProgress.taskId, submission.taskId)))
+          .get();
 
-      if (existing) {
-        await db.update(schema.userProgress)
-          .set({
-            completionsDone: existing.completionsDone + 1,
-            totalEarned: existing.totalEarned + task.payout,
-          })
-          .where(eq(schema.userProgress.id, existing.id))
-          .run();
-      } else {
-        await db.insert(schema.userProgress).values({
-          id: crypto.randomUUID(),
-          userId: submission.userId,
-          taskId: submission.taskId,
-          completionsDone: 1,
-          totalEarned: task.payout,
-        });
+        if (existing) {
+          await db.update(schema.userProgress)
+            .set({
+              completionsDone: existing.completionsDone + 1,
+              totalEarned: existing.totalEarned + task.payout,
+            })
+            .where(eq(schema.userProgress.id, existing.id))
+            .run();
+        } else {
+          await db.insert(schema.userProgress).values({
+            id: crypto.randomUUID(),
+            userId: workerId,
+            taskId: submission.taskId,
+            completionsDone: 1,
+            totalEarned: task.payout,
+          });
+        }
       }
     }
   }

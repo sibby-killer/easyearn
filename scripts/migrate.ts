@@ -51,13 +51,19 @@ async function main() {
   await client.execute(`
     CREATE TABLE IF NOT EXISTS submissions (
       id TEXT PRIMARY KEY,
-      user_id TEXT NOT NULL,
+      user_id TEXT DEFAULT '',
       task_id TEXT NOT NULL,
       screenshot TEXT NOT NULL,
+      reddit_username TEXT DEFAULT '',
+      worker_name TEXT DEFAULT '',
+      worker_phone TEXT DEFAULT '',
       status TEXT DEFAULT 'pending' NOT NULL,
       created_at TEXT NOT NULL
     )
   `);
+  try { await client.execute("ALTER TABLE submissions ADD COLUMN reddit_username TEXT DEFAULT ''"); } catch {}
+  try { await client.execute("ALTER TABLE submissions ADD COLUMN worker_name TEXT DEFAULT ''"); } catch {}
+  try { await client.execute("ALTER TABLE submissions ADD COLUMN worker_phone TEXT DEFAULT ''"); } catch {}
   await client.execute(`
     CREATE TABLE IF NOT EXISTS user_progress (
       id TEXT PRIMARY KEY,

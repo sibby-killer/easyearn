@@ -42,9 +42,12 @@ export const tasks = sqliteTable("tasks", {
 
 export const submissions = sqliteTable("submissions", {
   id: text("id").primaryKey(),
-  userId: text("user_id").notNull(),
+  userId: text("user_id").default(""),
   taskId: text("task_id").notNull(),
   screenshot: text("screenshot").notNull(),
+  redditUsername: text("reddit_username").default(""),
+  workerName: text("worker_name").default(""),
+  workerPhone: text("worker_phone").default(""),
   status: text("status").default("pending").notNull(),
   createdAt: text("created_at").notNull(),
 });
