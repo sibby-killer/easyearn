@@ -23,6 +23,7 @@ export default function AdminUsers() {
   const [unauthorized, setUnauthorized] = useState(false);
   const [search, setSearch] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const fetchUsers = useCallback(async () => {
     const meRes = await fetch("/api/auth/me");
@@ -101,6 +102,7 @@ export default function AdminUsers() {
               <th className="text-left py-3 px-2">Employment</th>
               <th className="text-left py-3 px-2">Daily Goal</th>
               <th className="text-left py-3 px-2">Created</th>
+              <th className="text-right py-3 px-2">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -129,10 +131,13 @@ export default function AdminUsers() {
                   <td className="py-3 px-2 text-gray-400">
                     {new Date(u.createdAt).toLocaleDateString()}
                   </td>
+                  <td className="py-3 px-2 text-right">
+                    <button onClick={(e) => { e.stopPropagation(); setDeleteConfirm(u.id); }} className="text-red-400 hover:text-red-300 transition-colors text-sm cursor-pointer">Delete</button>
+                  </td>
                 </tr>
                 {expandedId === u.id && (
                   <tr key={`${u.id}-details`}>
-                    <td colSpan={7} className="bg-gray-900/50 px-6 py-4">
+                    <td colSpan={8} className="bg-gray-900/50 px-6 py-4">
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                         <div>
                           <span className="text-gray-500">Email:</span>
@@ -174,7 +179,7 @@ export default function AdminUsers() {
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="text-center py-8 text-gray-500">
+                <td colSpan={8} className="text-center py-8 text-gray-500">
                   {search ? "No users match your search" : "No users found"}
                 </td>
               </tr>
@@ -182,6 +187,19 @@ export default function AdminUsers() {
           </tbody>
         </table>
       </div>
+
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 rounded-xl p-6 w-full max-w-sm">
+            <h3 className="text-lg font-bold mb-2">Confirm Delete</h3>
+            <p className="text-gray-400 mb-6">Delete this user? This cannot be undone.</p>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setDeleteConfirm(null)} className="px-4 py-2 rounded-lg text-gray-400 hover:text-white transition-colors">Cancel</button>
+              <button onClick={async () => { await fetch(`/api/users/${deleteConfirm}`, { method: "DELETE" }); setDeleteConfirm(null); fetchUsers(); }} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

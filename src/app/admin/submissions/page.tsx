@@ -116,6 +116,14 @@ export default function AdminSubmissions() {
         </button>
       </div>
 
+      <p className="text-gray-400 text-sm mb-6">Pending submissions: {submissions.length}. Approve or reject each submission.</p>
+
+      <div className="flex gap-4 mb-6">
+        <button onClick={() => router.push("/admin/submissions")} className="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-amber-600 text-white">Pending</button>
+        <button onClick={() => router.push("/admin/submissions?status=approved")} className="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-800 text-gray-300 hover:bg-gray-700">Approved</button>
+        <button onClick={() => router.push("/admin/submissions?status=rejected")} className="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-800 text-gray-300 hover:bg-gray-700">Rejected</button>
+      </div>
+
       {actionMsg && (
         <div className="mb-4 bg-emerald-600/20 text-emerald-400 px-4 py-2 rounded-lg">
           {actionMsg.text}
