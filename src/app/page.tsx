@@ -56,7 +56,7 @@ export default function Home() {
   const [category, setCategory] = useState("All");
   const [difficulty, setDifficulty] = useState("All");
   const [selectedTrick, setSelectedTrick] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"tasks" | "offers">("tasks");
+  const [activeTab, setActiveTab] = useState<"tasks" | "offers" | "cpagrip">("tasks");
   const [cart, setCart] = useState<Task[]>([]);
   const [email, setEmail] = useState("");
   const [emailStatus, setEmailStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -285,6 +285,8 @@ export default function Home() {
               <p className="text-sm text-text-muted">
                 {activeTab === "offers"
                   ? "Complete offers from our partner network. They adjust to your location."
+                  : activeTab === "cpagrip"
+                  ? "Earn MT points by completing CPAgrip offers in a new tab."
                   : selectedTrick
                     ? `Add tasks to your list for "${TRICKS.find(t => t.id === selectedTrick)?.title}". Need ${TRICKS.find(t => t.id === selectedTrick)?.threshold} MT in total value.`
                     : "Select a method above to get started, or browse tasks below."}
@@ -300,11 +302,25 @@ export default function Home() {
             </button>
             <button onClick={() => setActiveTab("offers")}
               className={`rounded-lg px-5 py-2 text-sm font-medium transition-colors ${activeTab === "offers" ? "bg-primary text-white" : "border border-border bg-card text-text-muted hover:text-text"}`}>
-              🏆 Offers
+              🏆 FastSvr
+            </button>
+            <button onClick={() => setActiveTab("cpagrip")}
+              className={`rounded-lg px-5 py-2 text-sm font-medium transition-colors ${activeTab === "cpagrip" ? "bg-primary text-white" : "border border-border bg-card text-text-muted hover:text-text"}`}>
+              🔥 CPAgrip
             </button>
           </div>
 
-          {activeTab === "tasks" ? (
+          {activeTab === "cpagrip" ? (
+            <div className="bg-card border border-border rounded-xl p-8 text-center">
+              <h3 className="text-lg font-semibold text-text mb-2">🔥 CPAgrip Offerwall</h3>
+              <p className="text-text-muted text-sm mb-4">Complete offers on CPAgrip to earn MT points. Click below to open the offerwall.</p>
+              <a href="/cpagrip" target="_blank" rel="noopener noreferrer"
+                className="inline-block bg-primary hover:bg-primary-dark text-white px-8 py-3 rounded-lg font-medium transition-colors">
+                Open CPAgrip Offers
+              </a>
+              <p className="text-xs text-text-muted mt-3">Opens in a new tab. Complete any offer then submit proof below.</p>
+            </div>
+          ) : activeTab === "tasks" ? (
             <>
           <div className="flex flex-wrap gap-2 mb-8">
             <button onClick={() => setCategory("All")}
