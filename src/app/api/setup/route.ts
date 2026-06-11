@@ -40,6 +40,14 @@ export async function GET() {
     await client.execute(`CREATE TABLE IF NOT EXISTS verification_codes (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, code TEXT NOT NULL, expires_at TEXT NOT NULL, used INTEGER DEFAULT 0 NOT NULL, created_at TEXT NOT NULL)`);
     results.push("verification_codes table OK");
 
+    await client.execute(`CREATE TABLE IF NOT EXISTS withdrawals (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, user_name TEXT DEFAULT '', user_country TEXT DEFAULT '', amount REAL NOT NULL, method TEXT DEFAULT 'paypal' NOT NULL, account TEXT NOT NULL, status TEXT DEFAULT 'pending' NOT NULL, created_at TEXT NOT NULL, approved_at TEXT DEFAULT '')`);
+    results.push("withdrawals table OK");
+
+    try { await client.execute("ALTER TABLE tasks ADD COLUMN admin_earnings REAL DEFAULT 0"); } catch {}
+    try { await client.execute("ALTER TABLE tasks ADD COLUMN difficulty TEXT DEFAULT 'easy'"); } catch {}
+    try { await client.execute("ALTER TABLE tasks ADD COLUMN cp_type TEXT DEFAULT 'CPA'"); } catch {}
+    try { await client.execute("ALTER TABLE submissions ADD COLUMN country TEXT DEFAULT ''"); } catch {}
+
     const catCount = await client.execute("SELECT COUNT(*) as c FROM categories");
     if (catCount.rows[0].c === 0) {
       const { v4: uuid } = await import("uuid");

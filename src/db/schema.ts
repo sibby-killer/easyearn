@@ -32,6 +32,9 @@ export const tasks = sqliteTable("tasks", {
   link: text("link").notNull(),
   image: text("image").default(""),
   payout: real("payout").notNull(),
+  adminEarnings: real("admin_earnings").default(0).notNull(),
+  difficulty: text("difficulty").default("easy").notNull(),
+  cpType: text("cp_type").default("CPA").notNull(),
   requiredCompletions: integer("required_completions").default(1).notNull(),
   locations: text("locations").notNull(),
   instructions: text("instructions").default(""),
@@ -48,6 +51,7 @@ export const submissions = sqliteTable("submissions", {
   redditUsername: text("reddit_username").default(""),
   workerName: text("worker_name").default(""),
   workerPhone: text("worker_phone").default(""),
+  country: text("country").default(""),
   status: text("status").default("pending").notNull(),
   createdAt: text("created_at").notNull(),
 });
@@ -82,6 +86,19 @@ export const emails = sqliteTable("emails", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
   createdAt: text("created_at").notNull(),
+});
+
+export const withdrawals = sqliteTable("withdrawals", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  userName: text("user_name").default(""),
+  userCountry: text("user_country").default(""),
+  amount: real("amount").notNull(),
+  method: text("method").default("paypal").notNull(),
+  account: text("account").notNull(),
+  status: text("status").default("pending").notNull(),
+  createdAt: text("created_at").notNull(),
+  approvedAt: text("approved_at").default(""),
 });
 
 export const verificationCodes = sqliteTable("verification_codes", {
