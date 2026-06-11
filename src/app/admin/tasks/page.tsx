@@ -11,6 +11,9 @@ interface Task {
   link: string;
   image: string;
   payout: number;
+  adminEarnings: number;
+  difficulty: string;
+  cpType: string;
   requiredCompletions: number;
   locations: string;
   instructions: string;
@@ -18,6 +21,13 @@ interface Task {
   sortOrder: number;
   createdAt: string;
 }
+
+const CP_TYPES = ["CPA", "CPI", "CPC", "CPV", "CPS", "CPL", "CPM"];
+const DIFFICULTY_MAP: Record<string, string> = {
+  CPA: "easy", CPI: "easy",
+  CPC: "medium", CPV: "medium",
+  CPS: "hard", CPL: "hard", CPM: "hard",
+};
 
 interface Category {
   name: string;
@@ -31,6 +41,8 @@ const emptyForm = {
   link: "",
   image: "",
   payout: "",
+  adminEarnings: "",
+  cpType: "CPA",
   requiredCompletions: "1",
   locations: "",
   instructions: "",
@@ -77,6 +89,7 @@ export default function AdminTasks() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
+    const cpType = form.cpType || "CPA";
     const body = {
       title: form.title,
       description: form.description,
@@ -84,6 +97,9 @@ export default function AdminTasks() {
       link: form.link,
       image: form.image,
       payout: parseFloat(form.payout),
+      adminEarnings: parseFloat(form.adminEarnings) || 0,
+      cpType,
+      difficulty: DIFFICULTY_MAP[cpType] || "easy",
       requiredCompletions: parseInt(form.requiredCompletions),
       locations: form.locations,
       instructions: form.instructions,
@@ -134,6 +150,8 @@ export default function AdminTasks() {
       link: task.link,
       image: task.image,
       payout: task.payout.toString(),
+      adminEarnings: (task.adminEarnings || 0).toString(),
+      cpType: task.cpType || "CPA",
       requiredCompletions: task.requiredCompletions.toString(),
       locations: task.locations,
       instructions: task.instructions,
@@ -191,7 +209,9 @@ export default function AdminTasks() {
             <tr className="text-gray-400 border-b border-gray-800">
               <th className="text-left py-3 px-2">Title</th>
               <th className="text-left py-3 px-2">Category</th>
+              <th className="text-left py-3 px-2">CP Type</th>
               <th className="text-left py-3 px-2">Payout</th>
+              <th className="text-left py-3 px-2">My Earnings</th>
               <th className="text-left py-3 px-2">Completions</th>
               <th className="text-left py-3 px-2">Active</th>
               <th className="text-left py-3 px-2">Created</th>
@@ -207,7 +227,11 @@ export default function AdminTasks() {
                     {task.category}
                   </span>
                 </td>
+                <td className="py-3 px-2">
+                  <span className="bg-gray-800 text-xs px-2 py-1 rounded">{task.cpType || "CPA"}</span>
+                </td>
                 <td className="py-3 px-2 text-emerald-400">{task.payout.toFixed(2)} MT</td>
+                <td className="py-3 px-2 text-amber-400">${(task.adminEarnings || 0).toFixed(2)}</td>
                 <td className="py-3 px-2">{task.requiredCompletions}</td>
                 <td className="py-3 px-2">
                   <button
@@ -307,7 +331,7 @@ export default function AdminTasks() {
                 </div>
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">
-                    Payout ($)
+                    User Payout (MT) <span className="text-gray-600">— shown to user</span>
                   </label>
                   <input
                     type="number"
@@ -316,6 +340,49 @@ export default function AdminTasks() {
                     value={form.payout}
                     onChange={(e) => setForm({ ...form, payout: e.target.value })}
                     className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">
+                    My Earnings ($) <span className="text-gray-600">— hidden from user</span>
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    value={form.adminEarnings}
+                    onChange={(e) => setForm({ ...form, adminEarnings: e.target.value })}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">
+                    Offer Type <span className="text-gray-600">— hidden from user</span>
+                  </label>
+                  <select
+                    value={form.cpType}
+                    onChange={(e) => setForm({ ...form, cpType: e.target.value })}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
+                  >
+                    {CP_TYPES.map((t) => (
+                      <option key={t} value={t}>{t} — {DIFFICULTY_MAP[t]}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    CPA/CPI = Easy &nbsp; CPC/CPV = Medium &nbsp; CPS/CPL/CPM = Hard
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">
+                    Difficulty <span className="text-gray-600">— shown to user</span>
+                  </label>
+                  <input
+                    type="text"
+                    disabled
+                    value={DIFFICULTY_MAP[form.cpType] || "easy"}
+                    className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-3 py-2 text-gray-400 focus:outline-none cursor-not-allowed"
                   />
                 </div>
               </div>

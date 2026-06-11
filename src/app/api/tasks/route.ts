@@ -6,6 +6,7 @@ import { generateId, getCurrentUser } from "@/lib/auth";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category");
+  const difficulty = searchParams.get("difficulty");
   const location = searchParams.get("location");
   const q = searchParams.get("q");
 
@@ -13,6 +14,9 @@ export async function GET(req: Request) {
 
   if (category && category !== "all") {
     conditions.push(eq(schema.tasks.category, category));
+  }
+  if (difficulty && difficulty !== "all") {
+    conditions.push(eq(schema.tasks.difficulty, difficulty));
   }
   if (location) {
     conditions.push(like(schema.tasks.locations, `%${location}%`));
@@ -43,6 +47,9 @@ export async function POST(req: Request) {
       link: body.link,
       image: body.image || "",
       payout: body.payout,
+      adminEarnings: body.adminEarnings || 0,
+      difficulty: body.difficulty || "easy",
+      cpType: body.cpType || "CPA",
       requiredCompletions: body.requiredCompletions || 1,
       locations: body.locations || "Global",
       instructions: body.instructions || "",

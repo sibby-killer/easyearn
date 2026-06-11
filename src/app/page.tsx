@@ -5,6 +5,7 @@ import TrickCard from "@/components/tricks/TrickCard";
 import TaskCard from "@/components/TaskCard";
 import TaskCart from "@/components/tricks/TaskCart";
 import OfferwallTab from "@/components/OfferwallTab";
+import TestimonialsPopup from "@/components/TestimonialsPopup";
 
 interface Task {
   id: string;
@@ -19,6 +20,7 @@ interface Task {
   instructions: string;
   active: number;
   createdAt: string;
+  difficulty: string;
 }
 
 interface Category {
@@ -52,6 +54,7 @@ export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [category, setCategory] = useState("All");
+  const [difficulty, setDifficulty] = useState("All");
   const [selectedTrick, setSelectedTrick] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"tasks" | "offers">("tasks");
   const [cart, setCart] = useState<Task[]>([]);
@@ -72,10 +75,11 @@ export default function Home() {
   useEffect(() => {
     const params = new URLSearchParams();
     if (category !== "All") params.set("category", category);
+    if (difficulty !== "All") params.set("difficulty", difficulty);
     fetch(`/api/tasks?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => setTasks(data.tasks || []));
-  }, [category]);
+  }, [category, difficulty]);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -144,6 +148,8 @@ export default function Home() {
   const trick1Unlocked = myEarned >= 20;
   const trick2Progress = Math.min(100, (myEarned / 50) * 100);
   const trick2Unlocked = myEarned >= 50 && trick1Unlocked;
+  const usdEarned = Math.min(5, (myEarned / 30) * 5);
+  const filteredTasks = tasks.filter(task => difficulty === "All" || task.difficulty === difficulty);
 
   return (
     <div className="flex flex-col">
@@ -224,6 +230,16 @@ export default function Home() {
                   <div className={`h-full rounded-full transition-all ${trick2Unlocked ? "bg-green-500" : trick1Unlocked ? "bg-primary" : "bg-border"}`} style={{ width: `${trick1Unlocked ? Math.min(100, trick2Progress) : 0}%` }} />
                 </div>
               </div>
+              <div>
+                <div className="flex justify-between text-xs text-text-muted mb-1">
+                  <span>Real Money Progress (withdraw $5 via PayPal)</span>
+                  <span>${usdEarned.toFixed(2)} / $5.00</span>
+                </div>
+                <div className="w-full bg-dark rounded-full h-2">
+                  <div className="h-full rounded-full transition-all bg-green-500" style={{ width: `${Math.min(100, (myEarned / 30) * 100)}%` }} />
+                </div>
+                <p className="text-xs text-text-muted mt-1">You've earned ${usdEarned.toFixed(2)} toward your first $5.00 withdrawal (need 30 MT)</p>
+              </div>
             </div>
           )}
         </div>
@@ -303,9 +319,18 @@ export default function Home() {
             ))}
           </div>
 
+          <div className="flex flex-wrap gap-2 mb-8">
+            {["All", "Easy", "Medium", "Hard"].map((d) => (
+              <button key={d} onClick={() => setDifficulty(d)}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${difficulty === d ? "bg-primary text-white" : "border border-border bg-card text-text-muted hover:border-primary/50 hover:text-text"}`}>
+                {d}
+              </button>
+            ))}
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <div className={`grid gap-6 ${cart.length > 0 && selectedTrick ? "sm:grid-cols-2 lg:col-span-3 lg:grid-cols-3" : "sm:grid-cols-2 lg:grid-cols-4 col-span-full"}`}>
-              {tasks.map((task) => (
+              {filteredTasks.map((task) => (
                 <div key={task.id} className="relative group">
                   <TaskCard task={task} />
                   {selectedTrick && (
@@ -319,7 +344,7 @@ export default function Home() {
                   )}
                 </div>
               ))}
-              {tasks.length === 0 && (
+              {filteredTasks.length === 0 && (
                 <p className="col-span-full text-center py-16 text-text-muted">No tasks available in this category. Check back soon!</p>
               )}
             </div>
@@ -406,6 +431,7 @@ export default function Home() {
       <footer className="border-t border-border px-4 py-8 text-center text-sm text-text-muted">
         &copy; {new Date().getFullYear()} Money Tricks. All rights reserved.
       </footer>
+      <TestimonialsPopup />
     </div>
   );
 }

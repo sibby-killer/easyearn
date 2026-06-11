@@ -173,6 +173,12 @@ export default function AdminDashboard() {
         >
           View Referrals
         </button>
+        <button
+          onClick={() => router.push("/admin/withdrawals")}
+          className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+        >
+          Withdrawals
+        </button>
       </div>
     </div>
   );

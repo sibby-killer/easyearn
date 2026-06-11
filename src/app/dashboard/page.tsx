@@ -67,6 +67,137 @@ function statusColor(status: string) {
   }
 }
 
+function WithdrawalSection({ totalEarned }: { totalEarned: number }) {
+  const [showForm, setShowForm] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [method, setMethod] = useState("paypal");
+  const [account, setAccount] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [msg, setMsg] = useState<{ type: string; text: string } | null>(null);
+  const [withdrawals, setWithdrawals] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/withdrawals").then(r => r.json()).then(d => setWithdrawals(d.withdrawals || [])).catch(() => {});
+  }, []);
+
+  async function handleRequest(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setMsg(null);
+    try {
+      const res = await fetch("/api/withdrawals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: parseFloat(amount), method, account }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMsg({ type: "success", text: "Withdrawal requested! Admin will review shortly." });
+        setAmount(""); setAccount("");
+        setShowForm(false);
+        const d2 = await fetch("/api/withdrawals").then(r => r.json());
+        setWithdrawals(d2.withdrawals || []);
+      } else {
+        setMsg({ type: "error", text: data.error || "Failed" });
+      }
+    } catch {
+      setMsg({ type: "error", text: "Network error" });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const usdEarned = Math.min(5, (totalEarned / 30) * 5);
+  const canWithdraw = totalEarned >= 2;
+
+  return (
+    <div className="bg-card border border-border rounded-xl p-6 mt-8">
+      <h2 className="text-lg font-semibold text-text mb-1">Withdraw Earnings</h2>
+      <p className="text-text-muted text-sm mb-4">
+        Your <strong>{totalEarned.toFixed(2)} MT</strong> = ${usdEarned.toFixed(2)} USD toward first $5. Minimum withdrawal: $2
+      </p>
+
+      {/* Mini progress to $5 */}
+      <div className="mb-4">
+        <div className="flex justify-between text-xs text-text-muted mb-1">
+          <span>Progress to $5 withdrawal ({30 - Math.min(30, totalEarned)} MT remaining)</span>
+          <span>${usdEarned.toFixed(2)} / $5.00</span>
+        </div>
+        <div className="w-full bg-dark rounded-full h-2.5">
+          <div className="h-full bg-success rounded-full transition-all" style={{ width: `${Math.min(100, (totalEarned / 30) * 100)}%` }} />
+        </div>
+      </div>
+
+      {msg && (
+        <div className={`text-sm rounded-lg px-4 py-3 mb-4 ${msg.type === "success" ? "bg-green-500/10 text-green-400" : "bg-danger/10 text-danger"}`}>
+          {msg.text}
+        </div>
+      )}
+
+      {withdrawals.filter(w => w.status === "pending").length > 0 && (
+        <p className="text-amber-400 text-sm mb-3">⏳ You have a pending withdrawal request</p>
+      )}
+
+      {showForm ? (
+        <form onSubmit={handleRequest} className="space-y-3">
+          <div>
+            <label className="block text-xs text-text-muted mb-1">Amount ($)</label>
+            <input type="number" step="0.01" min="2" required value={amount}
+              onChange={e => setAmount(e.target.value)}
+              className="w-full bg-dark border border-border rounded-lg px-3 py-2 text-text text-sm focus:outline-none focus:border-primary" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-text-muted mb-1">Method</label>
+              <select value={method} onChange={e => setMethod(e.target.value)}
+                className="w-full bg-dark border border-border rounded-lg px-3 py-2 text-text text-sm focus:outline-none focus:border-primary">
+                <option value="paypal">PayPal</option>
+                <option value="mpesa">M-Pesa</option>
+                <option value="airtel">Airtel Money</option>
+                <option value="bank">Bank Transfer</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs text-text-muted mb-1">Account / Email</label>
+              <input type="text" required value={account}
+                onChange={e => setAccount(e.target.value)}
+                className="w-full bg-dark border border-border rounded-lg px-3 py-2 text-text text-sm focus:outline-none focus:border-primary" />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button type="submit" disabled={submitting}
+              className="px-4 py-2 bg-success hover:bg-green-600 text-white text-sm font-medium rounded-lg transition disabled:opacity-50">
+              {submitting ? "Requesting..." : "Request Withdrawal"}
+            </button>
+            <button type="button" onClick={() => setShowForm(false)}
+              className="px-4 py-2 text-text-muted hover:text-text text-sm transition">Cancel</button>
+          </div>
+        </form>
+      ) : (
+        <button onClick={() => canWithdraw ? setShowForm(true) : null}
+          className={`px-5 py-2.5 rounded-lg text-sm font-medium transition ${canWithdraw ? "bg-success hover:bg-green-600 text-white" : "bg-border text-text-muted cursor-not-allowed"}`}>
+          {canWithdraw ? "Request Withdrawal" : "Earn 2 MT to withdraw"}
+        </button>
+      )}
+
+      {/* Withdrawal history */}
+      {withdrawals.length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-sm font-semibold text-text mb-2">History</h3>
+          <div className="space-y-1.5">
+            {withdrawals.slice(0, 5).map((w: any) => (
+              <div key={w.id} className="flex items-center justify-between text-sm">
+                <span className="text-text-muted">${w.amount.toFixed(2)} via {w.method}</span>
+                <span className={`text-xs px-2 py-0.5 rounded ${w.status === "approved" ? "text-green-400" : w.status === "rejected" ? "text-red-400" : "text-amber-400"}`}>{w.status}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -348,6 +479,9 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
+
+        {/* Withdrawal Section */}
+        <WithdrawalSection totalEarned={totalEarned} />
       </div>
     </div>
   );
