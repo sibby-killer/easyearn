@@ -9,8 +9,14 @@ export async function GET(req: Request) {
   const difficulty = searchParams.get("difficulty");
   const location = searchParams.get("location");
   const q = searchParams.get("q");
+  const admin = searchParams.get("admin");
 
   let conditions = [eq(schema.tasks.active, 1)];
+
+  // Only filter by visible for non-admin requests
+  if (admin !== "1") {
+    conditions.push(eq(schema.tasks.visible, 1));
+  }
 
   if (category && category !== "all") {
     conditions.push(eq(schema.tasks.category, category));
@@ -27,32 +33,7 @@ export async function GET(req: Request) {
 
   const tasks = await db.select().from(schema.tasks).where(and(...conditions)).orderBy(asc(schema.tasks.sortOrder)).all();
 
-  // Auto-create CPAgrip task if missing
-  const cpagripExists = await db.select().from(schema.tasks).where(eq(schema.tasks.id, "cpagrip-offers")).get();
-  if (!cpagripExists) {
-    await db.insert(schema.tasks).values({
-      id: "cpagrip-offers",
-      title: "Complete CPAgrip Offers",
-      description: "Complete offers on our partner offerwall. Opens in a new tab — pick any offer and finish it.",
-      category: "Offerwall",
-      link: "/cpagrip",
-      image: "",
-      payout: 2,
-      adminEarnings: 1,
-      difficulty: "easy",
-      cpType: "CPA",
-      requiredCompletions: 1,
-      locations: "Global",
-      instructions: "Click 'Start Task', complete any offer on the page that opens, then submit your proof.",
-      active: 1,
-      sortOrder: -1,
-      createdAt: new Date().toISOString(),
-    });
-  }
-  // Re-fetch to include the new CPAgrip task
-  const allTasks = await db.select().from(schema.tasks).where(and(...conditions)).orderBy(asc(schema.tasks.sortOrder)).all();
-
-  return NextResponse.json({ tasks: allTasks });
+  return NextResponse.json({ tasks });
 }
 
 export async function POST(req: Request) {
@@ -79,6 +60,7 @@ export async function POST(req: Request) {
       locations: body.locations || "Global",
       instructions: body.instructions || "",
       active: 1,
+      visible: body.visible !== undefined ? body.visible : 1,
       sortOrder: body.sortOrder || 0,
       createdAt: new Date().toISOString(),
     });

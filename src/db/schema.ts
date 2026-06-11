@@ -39,6 +39,7 @@ export const tasks = sqliteTable("tasks", {
   locations: text("locations").notNull(),
   instructions: text("instructions").default(""),
   active: integer("active").default(1).notNull(),
+  visible: integer("visible").default(1).notNull(),
   sortOrder: integer("sort_order").default(0).notNull(),
   createdAt: text("created_at").notNull(),
 });

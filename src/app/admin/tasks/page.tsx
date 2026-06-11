@@ -18,6 +18,7 @@ interface Task {
   locations: string;
   instructions: string;
   active: number;
+  visible: number;
   sortOrder: number;
   createdAt: string;
 }
@@ -46,6 +47,7 @@ const emptyForm = {
   requiredCompletions: "1",
   locations: "",
   instructions: "",
+  visible: "1",
   sortOrder: "0",
 };
 
@@ -69,7 +71,7 @@ export default function AdminTasks() {
       setLoading(false);
       return;
     }
-    const res = await fetch("/api/tasks?category=all");
+    const res = await fetch("/api/tasks?category=all&admin=1");
     const data = await res.json();
     setTasks(data.tasks);
     setLoading(false);
@@ -103,6 +105,7 @@ export default function AdminTasks() {
       requiredCompletions: parseInt(form.requiredCompletions),
       locations: form.locations,
       instructions: form.instructions,
+      visible: parseInt(form.visible),
       sortOrder: parseInt(form.sortOrder),
     };
 
@@ -142,6 +145,15 @@ export default function AdminTasks() {
     await fetchTasks();
   }
 
+  async function handleToggleVisible(task: Task) {
+    await fetch(`/api/tasks/${task.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ visible: task.visible ? 0 : 1 }),
+    });
+    await fetchTasks();
+  }
+
   function openEdit(task: Task) {
     setForm({
       title: task.title,
@@ -155,6 +167,7 @@ export default function AdminTasks() {
       requiredCompletions: task.requiredCompletions.toString(),
       locations: task.locations,
       instructions: task.instructions,
+      visible: task.visible.toString(),
       sortOrder: task.sortOrder.toString(),
     });
     setEditingId(task.id);
@@ -214,6 +227,7 @@ export default function AdminTasks() {
               <th className="text-left py-3 px-2">My Earnings</th>
               <th className="text-left py-3 px-2">Completions</th>
               <th className="text-left py-3 px-2">Active</th>
+              <th className="text-left py-3 px-2">Visible</th>
               <th className="text-left py-3 px-2">Created</th>
               <th className="text-right py-3 px-2">Actions</th>
             </tr>
@@ -243,6 +257,18 @@ export default function AdminTasks() {
                     }`}
                   >
                     {task.active ? "Active" : "Inactive"}
+                  </button>
+                </td>
+                <td className="py-3 px-2">
+                  <button
+                    onClick={() => handleToggleVisible(task)}
+                    className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                      task.visible
+                        ? "bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30"
+                        : "bg-gray-600/20 text-gray-400 hover:bg-gray-600/30"
+                    }`}
+                  >
+                    {task.visible ? "Shown" : "Hidden"}
                   </button>
                 </td>
                 <td className="py-3 px-2 text-gray-400">
@@ -389,10 +415,11 @@ export default function AdminTasks() {
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Link</label>
                 <input
-                  type="url"
+                  type="text"
                   required
                   value={form.link}
                   onChange={(e) => setForm({ ...form, link: e.target.value })}
+                  placeholder="https://... or /cpagrip"
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
                 />
               </div>
@@ -401,9 +428,10 @@ export default function AdminTasks() {
                   Image URL
                 </label>
                 <input
-                  type="url"
+                  type="text"
                   value={form.image}
                   onChange={(e) => setForm({ ...form, image: e.target.value })}
+                  placeholder="https://..."
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
                 />
               </div>
@@ -446,6 +474,20 @@ export default function AdminTasks() {
                     placeholder="Global"
                     className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Visible on Dashboard</label>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, visible: form.visible === "1" ? "0" : "1" })}
+                    className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      form.visible === "1"
+                        ? "bg-emerald-600/20 text-emerald-400 border border-emerald-600/30"
+                        : "bg-gray-800 text-gray-400 border border-gray-700"
+                    }`}
+                  >
+                    {form.visible === "1" ? "🟢 Shown" : "🔴 Hidden"}
+                  </button>
                 </div>
               </div>
               <div>

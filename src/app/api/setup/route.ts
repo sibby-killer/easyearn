@@ -46,6 +46,7 @@ export async function GET() {
     try { await client.execute("ALTER TABLE tasks ADD COLUMN admin_earnings REAL DEFAULT 0"); } catch {}
     try { await client.execute("ALTER TABLE tasks ADD COLUMN difficulty TEXT DEFAULT 'easy'"); } catch {}
     try { await client.execute("ALTER TABLE tasks ADD COLUMN cp_type TEXT DEFAULT 'CPA'"); } catch {}
+    try { await client.execute("ALTER TABLE tasks ADD COLUMN visible INTEGER DEFAULT 1"); } catch {}
     try { await client.execute("ALTER TABLE submissions ADD COLUMN country TEXT DEFAULT ''"); } catch {}
 
     const catCount = await client.execute("SELECT COUNT(*) as c FROM categories");
