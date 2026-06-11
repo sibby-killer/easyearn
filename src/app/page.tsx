@@ -322,7 +322,7 @@ export default function Home() {
                 <p className="text-text-muted text-sm mb-3">This system combines multiple income streams:</p>
                 <ul className="text-text-muted text-sm space-y-2 list-disc list-inside">
                   <li>Reddit posting & commenting ($30-50/day)</li>
-                  <li>CPA offer stacking across multiple platforms</li>
+                  <li>Offer stacking across multiple platforms</li>
                   <li>Referral bonuses from completed users</li>
                   <li>Automated content scheduling</li>
                 </ul>
@@ -351,7 +351,7 @@ export default function Home() {
       </section>
 
       <footer className="border-t border-border px-4 py-8 text-center text-sm text-text-muted">
-        &copy; {new Date().getFullYear()} EasyEarn. All rights reserved.
+        &copy; {new Date().getFullYear()} Money Tricks. All rights reserved.
       </footer>
     </div>
   );

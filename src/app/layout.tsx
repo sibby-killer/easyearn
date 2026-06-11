@@ -9,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Earn Hub - Complete Simple Tasks. Earn Real Rewards.",
+  title: "Money Tricks - Complete Tasks. Unlock Earnings.",
   description:
-    "Join Earn Hub and start earning real rewards by completing simple tasks like surveys, app downloads, and more.",
+    "Complete simple tasks and unlock proven money-making methods. No account needed.",
 };
 
 export default function RootLayout({

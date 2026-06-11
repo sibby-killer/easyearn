@@ -4,7 +4,7 @@ import { eq, and, desc, like } from "drizzle-orm";
 import { generateId, getCurrentUser } from "@/lib/auth";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.EMAIL_FROM || "noreply@easyearn.com";
+const FROM_EMAIL = process.env.EMAIL_FROM || "noreply@moneytricks.com";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "alfrednyongesa411@gmail.com";
 
 async function notifyAdmin(submission: Record<string, unknown>, taskTitle: string) {
@@ -30,7 +30,7 @@ async function notifyAdmin(submission: Record<string, unknown>, taskTitle: strin
           <p><strong>Phone:</strong> ${submission.workerPhone || "N/A"}</p>
           <p><strong>Reddit:</strong> ${submission.redditUsername || "N/A"}</p>
           <p><strong>Screenshot:</strong> <a href="${submission.screenshot}">View</a></p>
-          <p><a href="https://cpa-landing-pied.vercel.app/admin/submissions">Review in Admin Panel</a></p>
+          <p><a href="https://moneytricks.vercel.app/admin/submissions">Review in Admin Panel</a></p>
         `,
       }),
     });
