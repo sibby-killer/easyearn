@@ -1,19 +1,24 @@
 import { NextResponse } from "next/server";
 import { db, schema } from "@/db";
 import { eq } from "drizzle-orm";
-import { hashPassword, createSession, generateId } from "@/lib/auth";
+import { hashPassword, generateId } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { fullName, email, phone, password, location, gender, employment, dailyGoal } = body;
 
-    if (!fullName || !phone || !password || !location || !gender || !employment || !dailyGoal) {
-      return NextResponse.json({ error: "All fields except email are required" }, { status: 400 });
+    if (!fullName || !email || !phone || !password || !location || !gender || !employment || !dailyGoal) {
+      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    const existing = await db.select().from(schema.users).where(eq(schema.users.phone, phone)).get();
-    if (existing) {
+    const existingEmail = await db.select().from(schema.users).where(eq(schema.users.email, email)).get();
+    if (existingEmail) {
+      return NextResponse.json({ error: "Email already registered" }, { status: 400 });
+    }
+
+    const existingPhone = await db.select().from(schema.users).where(eq(schema.users.phone, phone)).get();
+    if (existingPhone) {
       return NextResponse.json({ error: "Phone number already registered" }, { status: 400 });
     }
 
@@ -23,7 +28,7 @@ export async function POST(req: Request) {
     await db.insert(schema.users).values({
       id,
       fullName,
-      email: email || "",
+      email,
       phone,
       password: hashed,
       location,
@@ -34,9 +39,7 @@ export async function POST(req: Request) {
       createdAt: new Date().toISOString(),
     });
 
-    await createSession(id);
-
-    return NextResponse.json({ success: true, user: { id, fullName, email: email || "", phone, location, gender, employment, dailyGoal, isAdmin: 0 } });
+    return NextResponse.json({ success: true, message: "Account created. Please login." });
   } catch (error) {
     return NextResponse.json({ error: "Registration failed" }, { status: 500 });
   }

@@ -44,7 +44,7 @@ export default function RegisterPage() {
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/login");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -70,150 +70,70 @@ export default function RegisterPage() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-text-muted mb-1.5">
-              Full Name
-            </label>
-            <input
-              type="text"
-              value={form.fullName}
-              onChange={update("fullName")}
-              placeholder="John Doe"
-              required
-              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
-            />
+            <label className="block text-sm font-medium text-text-muted mb-1.5">Full Name</label>
+            <input type="text" value={form.fullName} onChange={update("fullName")} placeholder="John Doe" required
+              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-text-muted mb-1.5">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              value={form.phone}
-              onChange={update("phone")}
-              placeholder="+1234567890"
-              required
-              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
-            />
+            <label className="block text-sm font-medium text-text-muted mb-1.5">Email</label>
+            <input type="email" value={form.email} onChange={update("email")} placeholder="john@example.com" required
+              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-text-muted mb-1.5">
-              Email <span className="text-text-muted/60">(optional)</span>
-            </label>
-            <input
-              type="email"
-              value={form.email}
-              onChange={update("email")}
-              placeholder="john@example.com"
-              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
-            />
+            <label className="block text-sm font-medium text-text-muted mb-1.5">Phone Number</label>
+            <input type="tel" value={form.phone} onChange={update("phone")} placeholder="+1234567890" required
+              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-text-muted mb-1.5">
-              Password
-            </label>
-            <input
-              type="password"
-              value={form.password}
-              onChange={update("password")}
-              placeholder="At least 6 characters"
-              required
-              minLength={6}
-              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
-            />
+            <label className="block text-sm font-medium text-text-muted mb-1.5">Password</label>
+            <input type="password" value={form.password} onChange={update("password")} placeholder="At least 6 characters" required minLength={6}
+              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-text-muted mb-1.5">
-              Location
-            </label>
-            <input
-              type="text"
-              value={form.location}
-              onChange={update("location")}
-              placeholder="City, Country"
-              required
-              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
-            />
+            <label className="block text-sm font-medium text-text-muted mb-1.5">Location</label>
+            <input type="text" value={form.location} onChange={update("location")} placeholder="City, Country" required
+              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-text-muted mb-1.5">
-                Gender
-              </label>
-              <select
-                value={form.gender}
-                onChange={update("gender")}
-                required
-                className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition appearance-none"
-              >
-                <option value="" disabled>
-                  Select
-                </option>
-                {GENDERS.map((g) => (
-                  <option key={g} value={g}>
-                    {g}
-                  </option>
-                ))}
+              <label className="block text-sm font-medium text-text-muted mb-1.5">Gender</label>
+              <select value={form.gender} onChange={update("gender")} required
+                className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition appearance-none">
+                <option value="" disabled>Select</option>
+                {GENDERS.map((g) => (<option key={g} value={g}>{g}</option>))}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-muted mb-1.5">
-                Employment
-              </label>
-              <select
-                value={form.employment}
-                onChange={update("employment")}
-                required
-                className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition appearance-none"
-              >
-                <option value="" disabled>
-                  Select
-                </option>
-                {EMPLOYMENTS.map((e) => (
-                  <option key={e} value={e}>
-                    {e}
-                  </option>
-                ))}
+              <label className="block text-sm font-medium text-text-muted mb-1.5">Employment</label>
+              <select value={form.employment} onChange={update("employment")} required
+                className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition appearance-none">
+                <option value="" disabled>Select</option>
+                {EMPLOYMENTS.map((e) => (<option key={e} value={e}>{e}</option>))}
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-text-muted mb-1.5">
-              Daily Goal
-            </label>
-            <input
-              type="text"
-              value={form.dailyGoal}
-              onChange={update("dailyGoal")}
-              placeholder="How much do you want to earn daily?"
-              required
-              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
-            />
+            <label className="block text-sm font-medium text-text-muted mb-1.5">Daily Goal</label>
+            <input type="text" value={form.dailyGoal} onChange={update("dailyGoal")} placeholder="How much do you want to earn daily?" required
+              className="w-full px-4 py-2.5 bg-dark border border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition" />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2.5 bg-primary hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium rounded-lg transition mt-2"
-          >
+          <button type="submit" disabled={loading}
+            className="w-full py-2.5 bg-primary hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium rounded-lg transition mt-2">
             {loading ? "Creating account..." : "Create Account"}
           </button>
         </form>
 
         <p className="text-text-muted text-sm text-center mt-6">
           Already have an account?{" "}
-          <Link
-            href="/login"
-            className="text-primary hover:text-primary-dark transition"
-          >
-            Sign In
-          </Link>
+          <Link href="/login" className="text-primary hover:text-primary-dark transition">Sign In</Link>
         </p>
       </div>
     </div>

@@ -94,6 +94,16 @@ async function main() {
       created_at TEXT NOT NULL
     )
   `);
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS verification_codes (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      code TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      used INTEGER DEFAULT 0 NOT NULL,
+      created_at TEXT NOT NULL
+    )
+  `);
 
   const catCount = await client.execute("SELECT COUNT(*) as c FROM categories");
   if (catCount.rows[0].c === 0) {

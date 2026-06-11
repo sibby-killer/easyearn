@@ -80,3 +80,12 @@ export const emails = sqliteTable("emails", {
   email: text("email").notNull().unique(),
   createdAt: text("created_at").notNull(),
 });
+
+export const verificationCodes = sqliteTable("verification_codes", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  code: text("code").notNull(),
+  expiresAt: text("expires_at").notNull(),
+  used: integer("used").default(0).notNull(),
+  createdAt: text("created_at").notNull(),
+});

@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
 import { db, schema } from "@/db";
 import { eq } from "drizzle-orm";
-import { verifyPassword, createSession } from "@/lib/auth";
+import { verifyPassword, createVerificationCode } from "@/lib/auth";
+import { sendVerificationCode } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
-    const { phone, password } = await req.json();
-    if (!phone || !password) {
-      return NextResponse.json({ error: "Phone and password required" }, { status: 400 });
+    const { email, password } = await req.json();
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email and password required" }, { status: 400 });
     }
 
-    const user = await db.select().from(schema.users).where(eq(schema.users.phone, phone)).get();
+    const user = await db.select().from(schema.users).where(eq(schema.users.email, email)).get();
     if (!user) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
@@ -20,21 +21,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    await createSession(user.id);
+    const code = await createVerificationCode(user.id);
+    const sent = await sendVerificationCode(user.email || email, code);
 
     return NextResponse.json({
       success: true,
-      user: {
-        id: user.id,
-        fullName: user.fullName,
-        email: user.email,
-        phone: user.phone,
-        location: user.location,
-        gender: user.gender,
-        employment: user.employment,
-        dailyGoal: user.dailyGoal,
-        isAdmin: user.isAdmin,
-      },
+      userId: user.id,
+      emailSent: sent,
+      message: sent
+        ? "Verification code sent to your email"
+        : `Code: ${code} (email not configured, use this code)`,
     });
   } catch (error) {
     return NextResponse.json({ error: "Login failed" }, { status: 500 });
