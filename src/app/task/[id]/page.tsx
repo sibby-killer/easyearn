@@ -124,7 +124,7 @@ export default function TaskDetailPage() {
 
             <div className="flex flex-wrap gap-3 mb-4">
               <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                ${task.payout.toFixed(2)} value
+                {task.payout.toFixed(2)} MT value
               </span>
               <span className="px-3 py-1 rounded-full text-xs font-medium bg-card-hover text-text-muted">
                 {task.category}
@@ -177,7 +177,7 @@ export default function TaskDetailPage() {
                           <Link href={`/task/${c.id}`} className={`text-text-muted hover:text-text ${c.id === id ? "text-primary font-medium" : ""}`}>
                             {c.title}
                           </Link>
-                          <span className="text-text-muted text-xs">${c.payout.toFixed(2)}</span>
+                          <span className="text-text-muted text-xs">{c.payout.toFixed(2)} MT</span>
                         </div>
                       ))}
                     </div>
@@ -237,7 +237,7 @@ export default function TaskDetailPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-text-muted">Value</span>
-                <span className="text-primary font-semibold">${task.payout.toFixed(2)}</span>
+                <span className="text-primary font-semibold">{task.payout.toFixed(2)} MT</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-text-muted">Completions</span>
@@ -264,7 +264,7 @@ export default function TaskDetailPage() {
                 {cart.map((c) => (
                   <Link key={c.id} href={`/task/${c.id}`}
                     className={`block text-sm py-1.5 px-3 rounded-lg transition ${c.id === id ? "bg-primary/10 text-primary" : "text-text-muted hover:bg-card-hover hover:text-text"}`}>
-                    {c.title} — <span className="text-primary">${c.payout.toFixed(2)}</span>
+                    {c.title} — <span className="text-primary">{c.payout.toFixed(2)} MT</span>
                   </Link>
                 ))}
               </div>

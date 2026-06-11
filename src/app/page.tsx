@@ -208,8 +208,8 @@ export default function Home() {
             <div className="space-y-3">
               <div>
                 <div className="flex justify-between text-xs text-text-muted mb-1">
-                  <span>Reddit Earnings Method (need $20 in tasks)</span>
-                  <span className={trick1Unlocked ? "text-green-400" : ""}>{trick1Unlocked ? "✓ UNLOCKED" : `$${myEarned.toFixed(2)} / $20.00`}</span>
+                  <span>Reddit Earnings Method (need 20 MT in tasks)</span>
+                  <span className={trick1Unlocked ? "text-green-400" : ""}>{trick1Unlocked ? "✓ UNLOCKED" : `${myEarned.toFixed(2)} MT / 20 MT`}</span>
                 </div>
                 <div className="w-full bg-dark rounded-full h-2">
                   <div className={`h-full rounded-full transition-all ${trick1Unlocked ? "bg-green-500" : "bg-primary"}`} style={{ width: `${Math.min(100, trick1Progress)}%` }} />
@@ -217,8 +217,8 @@ export default function Home() {
               </div>
               <div>
                 <div className="flex justify-between text-xs text-text-muted mb-1">
-                  <span>$200 Daily System (need Trick 1 + $50)</span>
-                  <span className={trick2Unlocked ? "text-green-400" : ""}>{trick2Unlocked ? "✓ UNLOCKED" : !trick1Unlocked ? "Locked (unlock Trick 1 first)" : `$${myEarned.toFixed(2)} / $50.00`}</span>
+                  <span>$200 Daily System (need Trick 1 + 50 MT)</span>
+                  <span className={trick2Unlocked ? "text-green-400" : ""}>{trick2Unlocked ? "✓ UNLOCKED" : !trick1Unlocked ? "Locked (unlock Trick 1 first)" : `${myEarned.toFixed(2)} MT / 50 MT`}</span>
                 </div>
                 <div className="w-full bg-dark rounded-full h-2">
                   <div className={`h-full rounded-full transition-all ${trick2Unlocked ? "bg-green-500" : trick1Unlocked ? "bg-primary" : "bg-border"}`} style={{ width: `${trick1Unlocked ? Math.min(100, trick2Progress) : 0}%` }} />
@@ -270,7 +270,7 @@ export default function Home() {
                 {activeTab === "offers"
                   ? "Complete offers from our partner network. They adjust to your location."
                   : selectedTrick
-                    ? `Add tasks to your list for "${TRICKS.find(t => t.id === selectedTrick)?.title}". Need \$${TRICKS.find(t => t.id === selectedTrick)?.threshold} in total value.`
+                    ? `Add tasks to your list for "${TRICKS.find(t => t.id === selectedTrick)?.title}". Need ${TRICKS.find(t => t.id === selectedTrick)?.threshold} MT in total value.`
                     : "Select a method above to get started, or browse tasks below."}
               </p>
             </div>
@@ -358,7 +358,7 @@ export default function Home() {
                 </ul>
               </div>
               {!trick2Unlocked && (
-                <p className="text-sm text-text-muted">Keep going! Complete $50 total in tasks to unlock the <strong>$200 Daily System</strong> →</p>
+                <p className="text-sm text-text-muted">Keep going! Complete 50 MT total in tasks to unlock the <strong>$200 Daily System</strong> →</p>
               )}
             </div>
           </div>

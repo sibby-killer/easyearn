@@ -207,7 +207,7 @@ export default function AdminTasks() {
                     {task.category}
                   </span>
                 </td>
-                <td className="py-3 px-2 text-emerald-400">${task.payout.toFixed(2)}</td>
+                <td className="py-3 px-2 text-emerald-400">{task.payout.toFixed(2)} MT</td>
                 <td className="py-3 px-2">{task.requiredCompletions}</td>
                 <td className="py-3 px-2">
                   <button

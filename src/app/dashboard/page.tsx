@@ -180,7 +180,7 @@ export default function DashboardPage() {
           <div className="bg-card border border-border rounded-xl p-6">
             <p className="text-text-muted text-sm">Total Earned</p>
             <p className="text-3xl font-bold text-success mt-1">
-              ${totalEarned.toFixed(2)}
+              {totalEarned.toFixed(2)} MT
             </p>
           </div>
           <div className="bg-card border border-border rounded-xl p-6">
@@ -341,7 +341,7 @@ export default function DashboardPage() {
                 <div>
                   <span className="text-text-muted">Bonus: </span>
                   <span className="text-success font-semibold">
-                    +${referralData.bonusAmount.toFixed(2)}
+                    +{referralData.bonusAmount.toFixed(2)} MT
                   </span>
                 </div>
               )}

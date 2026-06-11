@@ -29,7 +29,7 @@ export default function TaskCart({ tasks, onRemove, trickName }: TaskCartProps) 
           <div key={t.id} className="flex items-center justify-between gap-2 bg-dark rounded-lg px-3 py-2">
             <div className="min-w-0 flex-1">
               <p className="text-sm text-text truncate">{t.title}</p>
-              <p className="text-xs text-text-muted">${t.payout.toFixed(2)}</p>
+              <p className="text-xs text-text-muted">{t.payout.toFixed(2)} MT</p>
             </div>
             <button onClick={() => onRemove(t.id)} className="text-danger/60 hover:text-danger text-xs shrink-0 px-1">&times;</button>
           </div>
@@ -38,7 +38,7 @@ export default function TaskCart({ tasks, onRemove, trickName }: TaskCartProps) 
 
       <div className="flex justify-between items-center mb-4 pb-4 border-b border-border">
         <span className="text-text-muted text-sm">Total value</span>
-        <span className="text-text font-semibold">${total.toFixed(2)}</span>
+        <span className="text-text font-semibold">{total.toFixed(2)} MT</span>
       </div>
 
       <Link

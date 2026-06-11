@@ -115,7 +115,7 @@ export default function AdminReferrals() {
                   </span>
                 </td>
                 <td className="py-3 px-2 text-emerald-400">
-                  ${r.reward.toFixed(2)}
+                  {r.reward.toFixed(2)} MT
                 </td>
                 <td className="py-3 px-2 text-gray-400">
                   {new Date(r.createdAt).toLocaleDateString()}
