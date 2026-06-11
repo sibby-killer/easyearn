@@ -302,21 +302,21 @@ export default function Home() {
             </button>
             <button onClick={() => setActiveTab("offers")}
               className={`rounded-lg px-5 py-2 text-sm font-medium transition-colors ${activeTab === "offers" ? "bg-primary text-white" : "border border-border bg-card text-text-muted hover:text-text"}`}>
-              🏆 FastSvr
+              🏆 Offers
             </button>
             <button onClick={() => setActiveTab("cpagrip")}
               className={`rounded-lg px-5 py-2 text-sm font-medium transition-colors ${activeTab === "cpagrip" ? "bg-primary text-white" : "border border-border bg-card text-text-muted hover:text-text"}`}>
-              🔥 CPAgrip
+              🔥 More
             </button>
           </div>
 
           {activeTab === "cpagrip" ? (
             <div className="bg-card border border-border rounded-xl p-8 text-center">
-              <h3 className="text-lg font-semibold text-text mb-2">🔥 CPAgrip Offerwall</h3>
-              <p className="text-text-muted text-sm mb-4">Complete offers on CPAgrip to earn MT points. Click below to open the offerwall.</p>
+              <h3 className="text-lg font-semibold text-text mb-2">🔥 More Offers</h3>
+              <p className="text-text-muted text-sm mb-4">Complete more offers from our partner network to earn MT points.</p>
               <a href="/cpagrip" target="_blank" rel="noopener noreferrer"
                 className="inline-block bg-primary hover:bg-primary-dark text-white px-8 py-3 rounded-lg font-medium transition-colors">
-                Open CPAgrip Offers
+                Open Offer Wall
               </a>
               <p className="text-xs text-text-muted mt-3">Opens in a new tab. Complete any offer then submit proof below.</p>
             </div>
