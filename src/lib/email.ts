@@ -1,5 +1,5 @@
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.EMAIL_FROM || "noreply@moneytricks.com";
+const FROM_EMAIL = process.env.EMAIL_FROM || "onboarding@resend.dev";
 
 export async function sendVerificationCode(email: string, code: string): Promise<boolean> {
   if (RESEND_API_KEY) {

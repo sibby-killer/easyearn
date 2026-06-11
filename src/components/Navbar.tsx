@@ -51,12 +51,9 @@ export default function Navbar() {
           {loading ? (
             <div className="h-5 w-20 animate-pulse rounded bg-border" />
           ) : user ? (
-            <>
-              <button onClick={() => router.push("/dashboard")} className="text-sm font-medium text-text-muted hover:text-text transition-colors cursor-pointer" type="button">
-                Dashboard
-              </button>
-              <span className="text-sm text-text-muted">{user.fullName}</span>
-            </>
+            <button onClick={() => router.push(user.isAdmin ? "/admin" : "/dashboard")} className="text-sm font-medium text-text-muted hover:text-text transition-colors cursor-pointer" type="button">
+              Dashboard
+            </button>
           ) : (
             <>
               <button onClick={() => router.push("/login")} className="text-sm font-medium text-text-muted hover:text-text transition-colors cursor-pointer" type="button">
