@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Script from "next/script";
 import TrickCard from "@/components/tricks/TrickCard";
 import TaskCard from "@/components/TaskCard";
 import TaskCart from "@/components/tricks/TaskCart";
@@ -306,7 +307,7 @@ export default function Home() {
             </button>
             <button onClick={() => setActiveTab("cpagrip")}
               className={`rounded-lg px-5 py-2 text-sm font-medium transition-colors ${activeTab === "cpagrip" ? "bg-primary text-white" : "border border-border bg-card text-text-muted hover:text-text"}`}>
-              🔥 More
+              🔥 Offer Wall 2
             </button>
           </div>
 
@@ -463,6 +464,21 @@ export default function Home() {
         &copy; {new Date().getFullYear()} Money Tricks. All rights reserved.
       </footer>
       <TestimonialsPopup />
+
+      <Script id="schema-structured-data" type="application/ld+json" strategy="lazyOnload">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Money Tricks",
+          url: "https://money-tricks.vercel.app",
+          description: "Complete simple tasks and unlock proven money-making methods. Earn gift cards, PayPal cash, and more.",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://money-tricks.vercel.app/?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        })}
+      </Script>
     </div>
   );
 }
