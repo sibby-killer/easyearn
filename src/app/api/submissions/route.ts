@@ -30,7 +30,7 @@ async function notifyAdmin(submission: Record<string, unknown>, taskTitle: strin
           <p><strong>Phone:</strong> ${submission.workerPhone || "N/A"}</p>
           <p><strong>Reddit:</strong> ${submission.redditUsername || "N/A"}</p>
           <p><strong>Screenshot:</strong> <a href="${submission.screenshot}">View</a></p>
-          <p><a href="https://moneytricks.vercel.app/admin/submissions">Review in Admin Panel</a></p>
+          <p><a href="https://money-tricks.vercel.app/admin/submissions">Review in Admin Panel</a></p>
         `,
       }),
     });
