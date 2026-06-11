@@ -28,9 +28,18 @@ async function ensureOfferwallTask() {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
+
+  // Optional password check from env
+  const expectedPassword = process.env.OFFERWALL_PASSWORD;
+  const password = searchParams.get("password");
+  if (expectedPassword && password !== expectedPassword) {
+    return new NextResponse("invalid password", { status: 403 });
+  }
+
   const subid = searchParams.get("subid");
-  const amount = searchParams.get("amount");
-  const offerName = searchParams.get("offer") || "Offerwall Offer";
+  // Support multiple macro names for amount and offer name
+  const amount = searchParams.get("amount") || searchParams.get("payout") || searchParams.get("event_amount");
+  const campaignName = searchParams.get("campaign_name") || searchParams.get("offer_name") || searchParams.get("offer") || "Offerwall Offer";
 
   if (!subid) {
     return new NextResponse("missing subid", { status: 400 });
