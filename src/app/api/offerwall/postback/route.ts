@@ -26,28 +26,16 @@ async function ensureOfferwallTask() {
   }
 }
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-
-  // Optional password check from env
-  const expectedPassword = process.env.OFFERWALL_PASSWORD;
-  const password = searchParams.get("password");
-  if (expectedPassword && password !== expectedPassword) {
-    return new NextResponse("invalid password", { status: 403 });
-  }
-
-  const subid = searchParams.get("subid");
-  // Support multiple macro names for amount and offer name
+function getParams(searchParams: URLSearchParams) {
+  const subid = searchParams.get("subid") || searchParams.get("tracking_id");
   const amount = searchParams.get("amount") || searchParams.get("payout") || searchParams.get("event_amount");
-  const campaignName = searchParams.get("campaign_name") || searchParams.get("offer_name") || searchParams.get("offer") || "Offerwall Offer";
+  const campaignName = searchParams.get("campaign_name") || searchParams.get("offer_name") || searchParams.get("offer") || searchParams.get("offer_id") || "Offerwall Offer";
+  const password = searchParams.get("password");
+  return { subid, amount, campaignName, password };
+}
 
-  if (!subid) {
-    return new NextResponse("missing subid", { status: 400 });
-  }
-
+async function handlePostback(subid: string, payout: number) {
   await ensureOfferwallTask();
-
-  const payout = amount ? parseFloat(amount) : 1;
 
   await db.insert(schema.submissions).values({
     id: generateId(),
@@ -82,6 +70,55 @@ export async function GET(req: Request) {
       totalEarned: payout,
     });
   }
+}
 
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const { subid, amount, campaignName, password } = getParams(searchParams);
+
+  const expectedPassword = process.env.OFFERWALL_PASSWORD;
+  if (expectedPassword && password !== expectedPassword) {
+    return new NextResponse("invalid password", { status: 403 });
+  }
+
+  if (!subid) {
+    return new NextResponse("missing subid", { status: 400 });
+  }
+
+  const payout = amount ? parseFloat(amount) : 1;
+  await handlePostback(subid, payout);
+  return new NextResponse("ok");
+}
+
+export async function POST(req: Request) {
+  const contentType = req.headers.get("content-type") || "";
+
+  let params: URLSearchParams;
+
+  if (contentType.includes("application/json")) {
+    const body = await req.json();
+    const qs = new URLSearchParams();
+    for (const [k, v] of Object.entries(body)) {
+      if (typeof v === "string" || typeof v === "number") qs.set(k, String(v));
+    }
+    params = qs;
+  } else {
+    const text = await req.text();
+    params = new URLSearchParams(text);
+  }
+
+  const { subid, amount, campaignName, password } = getParams(params);
+
+  const expectedPassword = process.env.OFFERWALL_PASSWORD;
+  if (expectedPassword && password !== expectedPassword) {
+    return new NextResponse("invalid password", { status: 403 });
+  }
+
+  if (!subid) {
+    return new NextResponse("missing subid", { status: 400 });
+  }
+
+  const payout = amount ? parseFloat(amount) : 1;
+  await handlePostback(subid, payout);
   return new NextResponse("ok");
 }
