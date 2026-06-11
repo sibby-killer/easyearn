@@ -27,7 +27,32 @@ export async function GET(req: Request) {
 
   const tasks = await db.select().from(schema.tasks).where(and(...conditions)).orderBy(asc(schema.tasks.sortOrder)).all();
 
-  return NextResponse.json({ tasks });
+  // Auto-create CPAgrip task if missing
+  const cpagripExists = await db.select().from(schema.tasks).where(eq(schema.tasks.id, "cpagrip-offers")).get();
+  if (!cpagripExists) {
+    await db.insert(schema.tasks).values({
+      id: "cpagrip-offers",
+      title: "Complete CPAgrip Offers",
+      description: "Complete offers on our partner offerwall. Opens in a new tab — pick any offer and finish it.",
+      category: "Offerwall",
+      link: "/cpagrip",
+      image: "",
+      payout: 2,
+      adminEarnings: 1,
+      difficulty: "easy",
+      cpType: "CPA",
+      requiredCompletions: 1,
+      locations: "Global",
+      instructions: "Click 'Start Task', complete any offer on the page that opens, then submit your proof.",
+      active: 1,
+      sortOrder: -1,
+      createdAt: new Date().toISOString(),
+    });
+  }
+  // Re-fetch to include the new CPAgrip task
+  const allTasks = await db.select().from(schema.tasks).where(and(...conditions)).orderBy(asc(schema.tasks.sortOrder)).all();
+
+  return NextResponse.json({ tasks: allTasks });
 }
 
 export async function POST(req: Request) {
