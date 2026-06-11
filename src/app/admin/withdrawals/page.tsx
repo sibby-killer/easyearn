@@ -58,7 +58,7 @@ export default function AdminWithdrawals() {
     <div className="min-h-screen bg-gray-950 text-gray-100 p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Withdrawals</h1>
-        <button onClick={() => router.push("/admin")} className="text-gray-400 hover:text-white transition-colors">&larr; Back</button>
+        <button onClick={() => router.push("/admin")} className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors">&larr; Back</button>
       </div>
 
       {actionMsg && <div className="mb-4 bg-emerald-600/20 text-emerald-400 px-4 py-2 rounded-lg">{actionMsg.text}</div>}
