@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TrickCard from "@/components/tricks/TrickCard";
 import TaskCard from "@/components/TaskCard";
 import TaskCart from "@/components/tricks/TaskCart";
+import OfferwallTab from "@/components/OfferwallTab";
 
 interface Task {
   id: string;
@@ -52,6 +53,7 @@ export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [category, setCategory] = useState("All");
   const [selectedTrick, setSelectedTrick] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"tasks" | "offers">("tasks");
   const [cart, setCart] = useState<Task[]>([]);
   const [email, setEmail] = useState("");
   const [emailStatus, setEmailStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -227,20 +229,67 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tasks Section */}
+      {/* What You Can Earn */}
+      <section className="border-t border-border px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-2xl font-bold text-text text-center mb-3">What You Can Earn</h2>
+          <p className="text-text-muted text-center text-sm mb-10 max-w-lg mx-auto">
+            Complete offers and tasks to unlock real rewards, plus the money-making methods you really want.
+          </p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { icon: "🎁", name: "Amazon Gift Cards" },
+              { icon: "💵", name: "PayPal Cash" },
+              { icon: "🪙", name: "Bitcoin & Crypto" },
+              { icon: "🎮", name: "Google Play Codes" },
+              { icon: "🛒", name: "Walmart Gift Cards" },
+              { icon: "📱", name: "Mobile Top-Up" },
+              { icon: "💬", name: "Reddit Method" },
+              { icon: "🚀", name: "$200/Day System" },
+              { icon: "🏆", name: "Bonus Rewards" },
+            ].map((item) => (
+              <div key={item.name} className="bg-card border border-border rounded-xl p-4 text-center hover:border-primary/50 transition">
+                <div className="text-2xl mb-1">{item.icon}</div>
+                <p className="text-sm text-text font-medium">{item.name}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Tasks / Offers Section */}
       <section className={`border-t border-border px-4 py-12 sm:px-6 lg:px-8 ${!selectedTrick ? "bg-card/50" : ""}`}>
         <div className="mx-auto w-full max-w-7xl">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-xl font-bold text-text">Available Tasks</h2>
+              <h2 className="text-xl font-bold text-text">
+                {activeTab === "offers" ? "Offers Wall" : "Available Tasks"}
+              </h2>
               <p className="text-sm text-text-muted">
-                {selectedTrick
-                  ? `Add tasks to your list for "${TRICKS.find(t => t.id === selectedTrick)?.title}". Need \$${TRICKS.find(t => t.id === selectedTrick)?.threshold} in total value.`
-                  : "Select a method above to get started, or browse all tasks."}
+                {activeTab === "offers"
+                  ? "Complete offers from our partner network. They adjust to your location."
+                  : selectedTrick
+                    ? `Add tasks to your list for "${TRICKS.find(t => t.id === selectedTrick)?.title}". Need \$${TRICKS.find(t => t.id === selectedTrick)?.threshold} in total value.`
+                    : "Select a method above to get started, or browse tasks below."}
               </p>
             </div>
           </div>
 
+          {/* Tab toggle */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            <button onClick={() => { setActiveTab("tasks"); setCategory("All"); }}
+              className={`rounded-lg px-5 py-2 text-sm font-medium transition-colors ${activeTab === "tasks" ? "bg-primary text-white" : "border border-border bg-card text-text-muted hover:text-text"}`}>
+              📋 Tasks
+            </button>
+            <button onClick={() => setActiveTab("offers")}
+              className={`rounded-lg px-5 py-2 text-sm font-medium transition-colors ${activeTab === "offers" ? "bg-primary text-white" : "border border-border bg-card text-text-muted hover:text-text"}`}>
+              🏆 Offers
+            </button>
+          </div>
+
+          {activeTab === "tasks" ? (
+            <>
           <div className="flex flex-wrap gap-2 mb-8">
             <button onClick={() => setCategory("All")}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${category === "All" ? "bg-primary text-white" : "border border-border bg-card text-text-muted hover:border-primary/50 hover:text-text"}`}>
@@ -285,6 +334,10 @@ export default function Home() {
               </div>
             )}
           </div>
+            </>
+          ) : (
+            <OfferwallTab />
+          )}
         </div>
       </section>
 
