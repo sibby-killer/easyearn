@@ -42,7 +42,7 @@ const TRICKS = [
   {
     id: "daily-200",
     title: "$200 Daily System",
-    description: "Learn how to earn $200 every day with a proven system. Complete Trick 1 + $50 in tasks to unlock.",
+    description: "Learn how to earn $200 every day with a proven system. Complete Trick 1 + 50 MT in tasks to unlock.",
     icon: "🚀",
     tag: "Trick 2",
     threshold: 50,
@@ -62,7 +62,7 @@ export default function Home() {
   const [emailStatus, setEmailStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [myPhone, setMyPhone] = useState("");
   const [myEarned, setMyEarned] = useState(0);
-  const [showProgress, setShowProgress] = useState(false);
+  const [showProgress, setShowProgress] = useState(true);
 
   useEffect(() => {
     fetch("/api/categories").then(r => r.json()).then(d => setCategories(d.categories || []));
@@ -425,6 +425,21 @@ export default function Home() {
           </form>
           {emailStatus === "success" && <p className="mt-3 text-sm text-green-400">You're subscribed!</p>}
           {emailStatus === "error" && <p className="mt-3 text-sm text-danger">Something went wrong.</p>}
+        </div>
+      </section>
+
+      {/* Referral Banner */}
+      <section className="border-t border-border bg-gradient-to-r from-primary/10 to-transparent px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-xl font-bold text-text mb-2">👥 Refer Friends & Earn More</h2>
+          <p className="text-text-muted text-sm mb-6 max-w-lg mx-auto">
+            Create a free account to get your personal referral link. When a friend you refer earns 2 MT, you get <strong className="text-primary">1 MT bonus</strong>!
+          </p>
+          <a href="/register"
+            className="inline-block rounded-lg bg-primary px-8 py-3 text-sm font-semibold text-white hover:bg-primary-dark transition-colors">
+            Create Account & Get Referral Link
+          </a>
+          <p className="text-xs text-text-muted mt-3">Already have an account? <a href="/dashboard" className="text-primary hover:underline">Go to Dashboard</a></p>
         </div>
       </section>
 
